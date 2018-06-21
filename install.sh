@@ -39,6 +39,7 @@ echo
 mkdir -p $INSTALL_PATH
 mkdir -p $INSTALL_PATH/python/site-packages/pop
 mkdir -p $INSTALL_PATH/sbin
+mkdir -p $INSTALL_PATH/bin
 
 #require mkdir -p $CONFIG_PATH
 
@@ -57,6 +58,10 @@ python -m compileall $INSTALL_PATH/python/site-packages/pop > /dev/null
 cp $SOURCE/sbin/* $INSTALL_PATH/sbin/
 chown root:$(id -gn $USER) $INSTALL_PATH/sbin/*
 chmod 754 $INSTALL_PATH/sbin/*
+
+cp $SOURCE/bin/* $INSTALL_PATH/bin/
+chown root:$(id -gn $USER) $INSTALL_PATH/bin/*
+chmod 754 $INSTALL_PATH/bin/*
 
 echo " Done."
 echo
