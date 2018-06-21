@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+import os
+import sys
+import pwd
+import signal
+import traceback
+import logging
+import logging.handlers
+
+## setup the logger
+log_handler = logging.handlers.RotatingFileHandler(
+    '/var/log/pop/pop.log',maxBytes = 10000000,backupCount = 100)
+log_handler.setFormatter(logging.Formatter(fmt = '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+
+LOG = logging.getLogger()
+LOG.setLevel(logging.INFO)
+LOG.addHandler(log_handler)
+
+# Print some nice logo before we start logging with the timestamp format
+LOG.critical('''
++++++++++++++++++++++++++++++++++++++++
+++++++++++++++ HDFS-POP +++++++++++++++
+++++++++++++++  0.0.0 +++++++++++++++++
++++++++++++++++++++++++++++++++++++++++
+''')
+
+#log_handler.setFormatter(logging.Formatter(fmt = log_format))
+
+# Start the server
+from pop.hdfs_pop import hdfs_pop
+
+try:
+    daemon = hdfs_pop()
+    daemon.run()
+
+except:
+    print "\n EXIT!! (popd had an exception)\n"
+    raise
+    sys.exit(1)

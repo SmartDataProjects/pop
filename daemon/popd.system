@@ -1,0 +1,11 @@
+[Unit]
+Description=Popularity
+
+[Service]
+PIDFile=/var/run/popd.pid
+EnvironmentFile=/etc/sysconfig/popd
+ExecStart=_INSTALLPATH_/sbin/popd
+ExecReload=/bin/kill -TERM $MAINPID
+RestartSec=5
+KillMode=process
+Restart=on-failure
