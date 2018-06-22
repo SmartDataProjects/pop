@@ -6,6 +6,10 @@ from pop.engine import Engine
 
 pop_engine = Engine()
 
+if len(sys.argv[1:])==0:
+    print ' %s <namespace> [ <namespace> [ <namespace> [ ... ] ] ]>'%(sys.argv[0].split('/')[-1])
+    sys.exit(1)
+
 for namespace in sys.argv[1:]:
   
     print " NAMESPACE: %s"%(namespace)
