@@ -30,12 +30,15 @@ class Hdfs_pop(object):
         config.read(config_file)
 
         self.namenode_log = config.get('hdfs_pop','namenode_log')
+        self.namenode_history = config.get('hdfs_pop','namenode_history')
 
         self.engine_user = config.get('engine','user')
         self.engine_password = config.get('engine','password')
         self.engine_database = config.get('engine','database')
 
         self.last_update_time = 0
+
+        self._read_history()
 
     def run(self):
         """
@@ -49,8 +52,20 @@ class Hdfs_pop(object):
 
         while True:
 
-            self._run_one()
+            self._run_one(self.namenode_log)
             time.sleep(sleep_time)
+
+    def _read_history(self):
+
+        # read all log files in the history directory
+        files = os.listdir(self.namenode_history)
+        for file in files:
+            if '.log' in file:
+                input = "%s/%s"%(self.namenode_history,file)
+                LOG.info(' Initializing with: %s'%input)
+                self._run_one(input)
+        
+        return
 
     def _find_tag(self,tag,line):
 
@@ -68,7 +83,7 @@ class Hdfs_pop(object):
 
         return (rc,value)
 
-    def _run_one(self):
+    def _run_one(self,input_file):
         """
         This is one complete run over the existing logfiles
         Step 1: Find last update of the database
@@ -90,8 +105,8 @@ class Hdfs_pop(object):
 
         ## STEP 2
 
-        LOG.info(" Parsing log file: %s"%(self.namenode_log))
-        with open(self.namenode_log,"r") as fH:
+        LOG.info(" Parsing log file: %s"%(input_file))
+        with open(input_file,"r") as fH:
             data = fH.read()
 
         ## STEP 3
