@@ -72,8 +72,8 @@ echo '########################'
 echo
 echo "-> Installing.."
 
-cp $SOURCE/etc/pop.cfg /etc/
-sed -i "s|_INSTALLPATH_|$INSTALL_PATH|"  /etc/pop.cfg
+cp $SOURCE/etc/pop.cfg $ETC_PATH
+sed -i "s|_INSTALLPATH_|$INSTALL_PATH|" $ETC_PATH/pop.cfg
 
 echo " Done."
 echo
