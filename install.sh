@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # this is a hack
-export INSTALL_PATH=/usr/local/pop
+export INSTALL_PATH=/usr
 export LOG_PATH=/var/log/pop
+export ETC_PATH=
 export USER=cmsprod
-
+export PYTHONPATH=/usr/lib/python2.6/site-packages
 
 ### Where we are installing from (i.e. this directory) ###
 
@@ -26,66 +27,66 @@ echo '#########################'
 echo '######  LIBRARIES  ######'
 echo '#########################'
 echo
+echo "-> Installing.."
 
 ### (Clear &) Make the directories ###
 
-if [ -d $INSTALL_PATH ]
-then
-  echo "Target directory $INSTALL_PATH exists. Removing!"
-  rm -rf $INSTALL_PATH
-fi
-echo
-
 mkdir -p $INSTALL_PATH
-mkdir -p $INSTALL_PATH/python/site-packages/pop
+mkdir -p $PYTHONPATH/pop
 mkdir -p $INSTALL_PATH/sbin
 mkdir -p $INSTALL_PATH/bin
-mkdir -p $INSTALL_PATH/etc
-
-mkdir -p $LOG_PATH
-chown $USER:$(id -gn $USER) $LOG_PATH
+mkdir -p $ETC_PATH/etc
 
 ### Install python libraries ###
 
-echo "-> Installing.."
-
-cp -r $SOURCE/python/* $INSTALL_PATH/python/site-packages/pop/
-python -m compileall $INSTALL_PATH/python/site-packages/pop > /dev/null
+cp -r $SOURCE/python/* $PYTHONPATH/pop/
+python -m compileall $PYTHONPATH/pop > /dev/null
 
 ### Install the executable(s) ###
 
-cp $SOURCE/sbin/* $INSTALL_PATH/sbin/
-chown root:$(id -gn $USER) $INSTALL_PATH/sbin/*
-chmod 754 $INSTALL_PATH/sbin/*
+pop_files=`ls -1 $SOURCE/sbin`
+for file in $pop_files
+do
+    cp      $SOURCE/sbin/$file $INSTALL_PATH/sbin/$file
+    chown root:$(id -gn $USER) $INSTALL_PATH/sbin/$file
+    chmod 754                  $INSTALL_PATH/sbin/$file
+done
 
-cp $SOURCE/bin/* $INSTALL_PATH/bin/
-chown root:$(id -gn $USER) $INSTALL_PATH/bin/*
-chmod 754 $INSTALL_PATH/bin/*
+pop_files=`ls -1 $SOURCE/bin`
+for file in $pop_files
+do
+    cp       $SOURCE/bin/$file $INSTALL_PATH/bin/$file
+    chown root:$(id -gn $USER) $INSTALL_PATH/bin/$file
+    chmod 754                  $INSTALL_PATH/bin/$file
+done
+
+echo " Done."
+echo
 
 ### Install the configs ###
 
+echo
 echo '########################'
 echo '######  CONFIGS  #######'
 echo '########################'
 echo
 echo "-> Installing.."
 
-cp $SOURCE/etc/pop.cfg $INSTALL_PATH/etc/
-sed -i "s|_INSTALLPATH_|$INSTALL_PATH|"  $INSTALL_PATH/etc/pop.cfg
+cp $SOURCE/etc/pop.cfg /etc/
+sed -i "s|_INSTALLPATH_|$INSTALL_PATH|"  /etc/pop.cfg
 
 echo " Done."
 echo
 
-# Init script
+echo
+echo '#########################'
+echo '######  LOGFILES  #######'
+echo '#########################'
+echo
+echo "-> Installing.."
 
-echo "-> Writing $INITSCRIPT.."
-
-INITSCRIPT=$INSTALL_PATH/etc/profile.d/init.sh
-mkdir -p $INSTALL_PATH/etc/profile.d
-echo "## GENERATED -- DO NOT EDIT" > $INITSCRIPT
-echo "export POP_CONFIG=$INSTALL_PATH/etc/pop.cfg" >> $INITSCRIPT
-echo "export PYTHONPATH="$INSTALL_PATH/python/site-packages:$(echo $PYTHONPATH | sed "s|$INSTALL_PATH/python/site-packages:||") >> $INITSCRIPT
-echo "export PATH="$INSTALL_PATH/bin:$INSTALL_PATH/sbin:$(echo $PATH | sed "s|$INSTALL_PATH/bin:$INSTALL_PATH/sbin:||") >> $INITSCRIPT
+mkdir -p $LOG_PATH
+chown $USER:$(id -gn $USER) $LOG_PATH
 
 echo " Done."
 echo
@@ -103,11 +104,6 @@ then
   # systemd daemon
   cp $SOURCE/daemon/popd.systemd /usr/lib/systemd/system/popd.service
   sed -i "s|_INSTALLPATH_|$INSTALL_PATH|" /usr/lib/systemd/system/popd.service
-
-  # environment file for the daemon
-  ENV=/etc/sysconfig/popd
-  echo "PYTHONPATH=$INSTALL_PATH/python/site-packages" > $ENV
-
   systemctl daemon-reload
 else
   cp $SOURCE/daemon/popd.sysv /etc/init.d/popd
@@ -115,4 +111,5 @@ else
   chmod +x /etc/init.d/popd
 fi
 
-echo "Pop installation completed."
+echo " Done."
+echo

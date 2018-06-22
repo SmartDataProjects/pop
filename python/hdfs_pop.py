@@ -25,7 +25,7 @@ class Hdfs_pop(object):
         # reading detailed configurations
         #--------------------------------
         LOG.info('Loading the configuration: %s.'%(os.environ.get('POP_CONFIG')))
-        config_file = os.environ.get('POP_CONFIG')
+        config_file = os.getenv('POP_CONFIG',"/etc/pop.cfg")
         config = ConfigParser.RawConfigParser()
         config.read(config_file)
 

@@ -11,7 +11,7 @@ import ConfigParser
 # reading detailed configurations
 #--------------------------------
 config = ConfigParser.RawConfigParser()
-config.read(os.environ.get('POP_CONFIG'))
+config.read(os.getenv('POP_CONFIG',"/etc/pop.cfg"))
 logfile = config.get('hdfs_pop','logfile')
 
 ## setup the logger
