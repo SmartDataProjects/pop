@@ -6,10 +6,11 @@ from pop.engine import Engine
 
 pop_engine = Engine()
 
-namespace = "/scratch/dabercro"
-summary = pop_engine.get_namespace_usage_summary(namespace)
-
-for (localname,n_accesses,last_access) in summary:
+for namespace in sys.argv[1:]:
+  
+    print " NAMESPACE: %s"%(namespace)
+    summary = pop_engine.get_namespace_usage_summary(namespace)
+    for (localname,n_accesses,last_access) in summary:
     
-    lfn = namespace + localname
-    print " LACC: %s  NACC: %d  LFN: %s"%(str(last_access),n_accesses,lfn)
+        lfn = namespace + localname
+        print " LACC: %s  NACC: %d  LFN: %s"%(str(last_access),n_accesses,lfn)
