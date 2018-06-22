@@ -3,7 +3,7 @@
 # this is a hack
 export INSTALL_PATH=/usr
 export LOG_PATH=/var/log/pop
-export ETC_PATH=
+export ETC_PATH=/etc
 export USER=cmsprod
 export PYTHONPATH=/usr/lib/python2.6/site-packages
 
@@ -35,7 +35,7 @@ mkdir -p $INSTALL_PATH
 mkdir -p $PYTHONPATH/pop
 mkdir -p $INSTALL_PATH/sbin
 mkdir -p $INSTALL_PATH/bin
-mkdir -p $ETC_PATH/etc
+mkdir -p $ETC_PATH
 
 ### Install python libraries ###
 

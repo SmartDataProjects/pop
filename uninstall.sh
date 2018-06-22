@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # this is a hack
-export INSTALL_PATH=/usr/local/pop
+export INSTALL_PATH=/usr
 export LOG_PATH=/var/log/pop
+export ETC_PATH=/etc
 export USER=cmsprod
-
-### Where we are installing from (i.e. this directory) ###
+export PYTHONPATH=/usr/lib/python2.6/site-packages
 
 export SOURCE=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 
@@ -19,36 +19,57 @@ else
 fi
 
 echo
-echo "Uninstalling pop."
+echo "Uninstalling pop based on $SOURCE."
 echo
 echo '#########################'
 echo '######  LIBRARIES  ######'
 echo '#########################'
 echo
-
-### Clear the directories ###
-
-if [ -d $INSTALL_PATH ]
-then
-  echo "Target directory $INSTALL_PATH exists. Removing!"
-  rm -rf $INSTALL_PATH
-fi
-echo
-
-rm -rf $LOG_PATH
-
-### Install python libraries ###
-
 echo "-> Uninstalling.."
 
+### Install the python libraries ###
+
+rm -rf $PYTHONPATH/pop
+
 ### Install the executable(s) ###
+
+pop_files=`ls -1 $SOURCE/sbin`
+for file in $pop_files
+do
+    rm -f $INSTALL_PATH/sbin/$file
+done
+
+pop_files=`ls -1 $SOURCE/bin`
+for file in $pop_files
+do
+    rm -f $INSTALL_PATH/bin/$file
+done
 
 echo " Done."
 echo
 
 ### Install the configs ###
 
-# Init script
+echo
+echo '########################'
+echo '######  CONFIGS  #######'
+echo '########################'
+echo
+echo "-> Uninstalling.."
+
+rm -f $ETC_PATH/pop.cfg
+
+echo " Done."
+echo
+
+echo
+echo '#########################'
+echo '######  LOGFILES  #######'
+echo '#########################'
+echo
+echo "-> Uninstalling.."
+
+rm -rf $LOG_PATH
 
 echo " Done."
 echo
@@ -59,17 +80,16 @@ echo '########################'
 echo '######  SERVICES  ######'
 echo '########################'
 echo
-echo "-> Uninstalling popd.."
+echo "-> Uninstalling.."
 
 if [[ $(uname -r) =~ el7 ]]
 then
   # systemd daemon
-  rm -f /usr/lib/systemd/system/popd.service
-
-  # environment file for the daemon
-  rm -f /etc/sysconfig/popd
+  rm /usr/lib/systemd/system/popd.service
+  systemctl daemon-reload
 else
-  rm -f /etc/init.d/popd
+  rm /etc/init.d/popd
 fi
 
-echo "Pop uninstallation completed."
+echo " Done."
+echo
