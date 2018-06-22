@@ -2,9 +2,9 @@
 import sys
 
 # Start the server
-from pop.engine import engine
+from pop.engine import Engine
 
-pop_engine = engine()
+pop_engine = Engine()
 
 namespace = "/scratch/dabercro"
 summary = pop_engine.get_namespace_usage_summary(namespace)

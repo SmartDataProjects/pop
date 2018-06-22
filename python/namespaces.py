@@ -1,18 +1,18 @@
 import re
 import logging
 
-from pop.database import database
+from pop.database import Database
 
 LOG = logging.getLogger()
 
-class namespaces:
+class Namespaces:
     'Describe a namespace.'
     
     def __init__(self):
         ## inialize out namespaces
 
         # get access to the database
-        self.db = database()
+        self.db = Database()
         self.dbhandle = self.db.handle
 
         # load all namespace patterns

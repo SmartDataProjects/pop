@@ -1,17 +1,16 @@
+import os
 import re
 import time
 import datetime
 import logging
+import ConfigParser
 
-from pop.engine import engine
-
-# logfile location
-NAMENODE_LOG = "/var/log/hadoop-hdfs/hadoop-hdfs-namenode-t3serv002.mit.edu.log"
+from pop.engine import Engine
 
 LOG = logging.getLogger()
 
 # main object
-class hdfs_pop(object):
+class Hdfs_pop(object):
     """
     Main daemon class.
     """
@@ -20,9 +19,23 @@ class hdfs_pop(object):
         """
         constructor
         """
+
         LOG.info('Initializing hdfs-pop server %s.', __file__)
+
+        # reading detailed configurations
+        #--------------------------------
+        LOG.info('Loading the configuration: %s.'%(os.environ.get('POP_CONFIG')))
+        config_file = os.environ.get('POP_CONFIG')
+        config = ConfigParser.RawConfigParser()
+        config.read(config_file)
+
+        self.namenode_log = config.get('hdfs_pop','namenode_log')
+
+        self.engine_user = config.get('engine','user')
+        self.engine_password = config.get('engine','password')
+        self.engine_database = config.get('engine','database')
+
         self.last_update_time = 0
-        LOG.info('Loading the inventory.')
 
     def run(self):
         """
@@ -70,15 +83,15 @@ class hdfs_pop(object):
         ## STEP 1
 
         # make a database interface
-        pop_engine = engine()
+        pop_engine = Engine(self.engine_user,self.engine_password,self.engine_database)
 
         # find the time when the database was last updated
         last_update = pop_engine.get_last_update()
 
         ## STEP 2
 
-        LOG.info(" Parsing log file: %s"%(NAMENODE_LOG))
-        with open(NAMENODE_LOG,"r") as fH:
+        LOG.info(" Parsing log file: %s"%(self.namenode_log))
+        with open(self.namenode_log,"r") as fH:
             data = fH.read()
 
         ## STEP 3
@@ -128,7 +141,6 @@ class hdfs_pop(object):
             pop_engine.set_last_update(last_log)
                     
         return 0
-
 
 if __name__ == '__main__':
     pop = hdfs_pop()

@@ -1,20 +1,21 @@
 import datetime
 import logging
 
-from pop.database import database
-from pop.namespaces import namespaces
+from pop.database import Database
+from pop.namespaces import Namespaces
 
 LOG = logging.getLogger()
 
-class engine:
+class Engine:
     """
     Provides a standard interface for the popularity operations.
     """
     
-    def __init__(self):
-        self.db = database()
+    def __init__(self,user="",password="",database=""):
+        # not yet using the input parameters
+        self.db = Database(user="",password="",database="")
         self.dbhandle = self.db.handle
-        self.namespaces = namespaces()
+        self.namespaces = Namespaces()
 
     def add_open(self,filename,timestamp):
 

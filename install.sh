@@ -40,8 +40,7 @@ mkdir -p $INSTALL_PATH
 mkdir -p $INSTALL_PATH/python/site-packages/pop
 mkdir -p $INSTALL_PATH/sbin
 mkdir -p $INSTALL_PATH/bin
-
-#require mkdir -p $CONFIG_PATH
+mkdir -p $INSTALL_PATH/etc
 
 mkdir -p $LOG_PATH
 chown $USER:$(id -gn $USER) $LOG_PATH
@@ -63,18 +62,28 @@ cp $SOURCE/bin/* $INSTALL_PATH/bin/
 chown root:$(id -gn $USER) $INSTALL_PATH/bin/*
 chmod 754 $INSTALL_PATH/bin/*
 
+### Install the configs ###
+
+echo '########################'
+echo '######  CONFIGS  #######'
+echo '########################'
+echo
+echo "-> Installing.."
+
+cp $SOURCE/etc/pop.cfg $INSTALL_PATH/etc/
+sed -i "s|_INSTALLPATH_|$INSTALL_PATH|"  $INSTALL_PATH/etc/pop.cfg
+
 echo " Done."
 echo
 
-### Install the configs ###
-
 # Init script
+
+echo "-> Writing $INITSCRIPT.."
 
 INITSCRIPT=$INSTALL_PATH/etc/profile.d/init.sh
 mkdir -p $INSTALL_PATH/etc/profile.d
-echo "-> Writing $INITSCRIPT.."
-
 echo "## GENERATED -- DO NOT EDIT" > $INITSCRIPT
+echo "export POP_CONFIG=$INSTALL_PATH/etc/pop.cfg" >> $INITSCRIPT
 echo "export PYTHONPATH="$INSTALL_PATH/python/site-packages:$(echo $PYTHONPATH | sed "s|$INSTALL_PATH/python/site-packages:||") >> $INITSCRIPT
 echo "export PATH="$INSTALL_PATH/bin:$INSTALL_PATH/sbin:$(echo $PATH | sed "s|$INSTALL_PATH/bin:$INSTALL_PATH/sbin:||") >> $INITSCRIPT
 

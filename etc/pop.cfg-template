@@ -1,0 +1,8 @@
+[hdfs_pop]
+logfile = /var/log/pop/pop.log
+namenode_log = /var/log/hadoop-hdfs/hadoop-hdfs-namenode-t3serv002.mit.edu.log
+
+[engine]
+user = 
+password = 
+database = pop
