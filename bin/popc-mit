@@ -4,10 +4,11 @@ import sys
 naccess_dataset = {}
 last_access_dataset = {}
 
-def add_access(localname,n_accesses,last_access):
+def add_access(localname,n_accesses,last_access,debug):
 
     dataset = "/".join(localname.split("/")[1:4])
-    print " Dataset: " + dataset
+    if debug:
+        print " Dataset: " + dataset
     if dataset not in naccess_dataset:
         naccess_dataset[dataset] = n_accesses
         last_access_dataset[dataset] = last_access
@@ -23,29 +24,32 @@ from pop.engine import Engine
 pop_engine = Engine()
 
 namespace = "/cms/store/user/paus"
-
-print
-print " NAMESPACE: %s"%(namespace)
+debug = False
 
 summary = pop_engine.get_namespace_usage_summary(namespace)
 
-print ""
-print " ============"
-print " File summary"
-print " ============\n"
+if debug:
+    print ""
+    print " ============"
+    print " File summary"
+    print " ============\n"
+    
+    print " LACC                NACC LFN"
+    print "====================-====-===========-------"
 
-print " LACC                NACC LFN"
-print "====================-====-===========-------"
 for (localname,n_accesses,last_access) in summary:
-    add_access(localname,n_accesses,last_access)
+    add_access(localname,n_accesses,last_access,debug)
     lfn = namespace + localname
-    print " %s %4d %s"%(str(last_access),n_accesses,lfn)
+    if debug:
+        print " %s %4d %s"%(str(last_access),n_accesses,lfn)
 
 print ""
 print " ==============="
 print " Dataset summary"
-print " ===============\n"
-
+print " ==============="
+print ""
+print " NAMESPACE: %s"%(namespace)
+print ""
 print " LACC                NACC DATASET"
 print "====================-====-===========-------"
 for dataset in naccess_dataset:
