@@ -10,6 +10,14 @@ if len(sys.argv[1:])==0:
     print ' %s <namespace> [ <namespace> [ <namespace> [ ... ] ] ]>'%(sys.argv[0].split('/')[-1])
     sys.exit(1)
 
+namespaces = pop_engine.get_namespaces()
+print ""    
+print " Summary of all namespaces"
+print " -------------------------"
+for namespace in namespaces:
+    print " > %s"%(namespace)
+print ""    
+
 for namespace in sys.argv[1:]:
   
     print " NAMESPACE: %s"%(namespace)

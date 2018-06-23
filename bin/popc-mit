@@ -23,6 +23,17 @@ from pop.engine import Engine
 
 pop_engine = Engine()
 
+namespaces = pop_engine.get_namespaces()
+print ""
+print " ================="
+print " Namespaces in pop"
+print " ================="
+print ""
+for namespace in namespaces:
+    print " > %s"%(namespace)
+print ""    
+
+
 namespace = "/cms/store/user/paus"
 debug = False
 

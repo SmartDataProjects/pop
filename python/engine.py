@@ -87,6 +87,26 @@ class Engine:
 
         return rc
 
+    def get_namespaces(self):
+
+        # get a fresh cursor
+        cursor = self.dbhandle.cursor()
+
+        # prepare sql query to get files with the given filename
+        sql  = "select name from namespaces"
+        try:
+            # Execute the SQL command
+            rc = cursor.execute(sql)
+            LOG.debug(' Executed: %s (%d)'%(sql,rc))
+            results = cursor.fetchall()
+        except:
+            LOG.error(" ERROR - selecting from namespaces table (%s)."%sql)
+            results = []
+
+        cursor.close()
+
+        return results
+
     def get_namespace_usage_summary(self,namespace):
 
         # get each access for any given file in the namespace
