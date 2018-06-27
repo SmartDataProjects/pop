@@ -12,8 +12,9 @@ Namespaces
 pop allows to define namespaces using regular expressions. When file usage is recorded, the accessed
 file names are analyzed and namespaces are generated automatically according to the given patterns
 and stored in the database. The recorded namespaces are kept and changing namespaces during the
-operations need to be carefully tested to avoid clashes that can occur. So keep it saimple and think
-:-)
+operations need to be carefully tested to avoid clashes that can occur.
+
+So keep it simple and think :-)
 
 Implementation
 --------------
