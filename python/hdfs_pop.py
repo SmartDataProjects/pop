@@ -67,6 +67,22 @@ class Hdfs_pop(object):
         
         return
 
+    def _find_completed(self,line):
+
+        # initialize
+        rc = -1
+        value = ""
+        
+        # find the command and source tags in the line
+        m = re.findall(r"completeFile: (\S*)",line)
+
+        # print if we have something
+        if len(m)==1:
+            rc = 0
+            value = m[0]
+
+        return (rc,value)
+
     def _find_tag(self,tag,line):
 
         # initialize
@@ -128,6 +144,14 @@ class Hdfs_pop(object):
             if log_time<last_update:
                 continue
 
+            # first try to find new file
+            (rc,src) = self._find_completed(line)
+            if rc == 0:
+                LOG.info(" Adding entry - DATE:%s  Completed  SRC:%s"%(str(log_time),src))
+                pop_engine.add_entry(src,log_time)
+                continue
+
+            # find a valid command, source tag
             (rc,cmd) = self._find_tag("cmd",line)
             if rc != 0:
                 continue

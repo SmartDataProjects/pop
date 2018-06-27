@@ -12,10 +12,16 @@ class Engine:
     """
     
     def __init__(self,user="",password="",database=""):
+
         # not yet using the input parameters
         self.db = Database(user="",password="",database="")
         self.dbhandle = self.db.handle
         self.namespaces = Namespaces()
+
+    def add_entry(self,filename,timestamp):
+        # this place could be used to make a separate entry into a 'file_appearance' table or
+        # something similar but for now when the file appears we just enter a file usage
+        return self.add_open(filename,timestamp)
 
     def add_open(self,filename,timestamp):
 
@@ -36,13 +42,13 @@ class Engine:
         return rc
 
     def delete_usage(self,filename):
-        rc = 0
 
         # get a fresh cursor
         cursor = self.dbhandle.cursor()
 
         # get ids (careful they might not exist, so they wil be created if needed)
         (namespace_id,file_id) = self._find_ids(filename)
+        rc = 0
         if file_id > 0:
             sql = "delete from file_usage where file_id = %d"%(file_id)
             rc = cursor.execute(sql)
@@ -75,7 +81,6 @@ class Engine:
 
     def set_last_update(self,timestamp):
 
-        rc = 0
         # get a fresh cursor
         cursor = self.dbhandle.cursor()
 
