@@ -29,7 +29,7 @@ The *open* tag will add a file usage to the 'file_usage' table which includes th
 timestamp when that usage occured. The *delete* tag will lead to the deletion of all file usage data
 for the given file.
 
-To ensure that freshly copied file will show some usage and the time of arrival can be deduced the
+To ensure that freshly copied files will show some usage and the time of arrival can be deduced the
 completion of the file copy will count as one usage and added as an entry into the 'file_usage'
 table of the database. This is based on finding the *completedFile* tag.
 
