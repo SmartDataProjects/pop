@@ -45,14 +45,14 @@ if debug:
     print " File summary"
     print " ============\n"
     
-    print " LACC                NACC LFN"
-    print "====================-====-===========-------"
+    print " LACC                NACC   LFN"
+    print "====================-======-===========-------"
 
 for (localname,n_accesses,last_access) in summary:
     add_access(localname,n_accesses,last_access,debug)
     lfn = namespace + localname
     if debug:
-        print " %s %4d %s"%(str(last_access),n_accesses,lfn)
+        print " %s %6d %s"%(str(last_access),n_accesses,lfn)
 
 print ""
 print " ==============="
@@ -61,7 +61,7 @@ print " ==============="
 print ""
 print " NAMESPACE: %s"%(namespace)
 print ""
-print " LACC                NACC DATASET"
-print "====================-====-===========-------"
+print " LACC                NACC   DATASET"
+print "====================-======-===========-------"
 for dataset in naccess_dataset:
-    print " %s %4d %s"%(str(last_access_dataset[dataset]),naccess_dataset[dataset],dataset)
+    print " %s %6d %s"%(str(last_access_dataset[dataset]),naccess_dataset[dataset],dataset)

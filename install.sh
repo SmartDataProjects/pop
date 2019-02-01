@@ -73,6 +73,7 @@ echo
 echo "-> Installing.."
 
 cp $SOURCE/etc/pop.cfg $ETC_PATH
+cat $SOURCE/etc/my.cnf >> $ETC_PATH/my.cnf
 sed -i "s|_INSTALLPATH_|$INSTALL_PATH|" $ETC_PATH/pop.cfg
 
 echo " Done."
